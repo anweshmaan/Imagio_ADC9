@@ -1,0 +1,50 @@
+Single Responsibility Principle states that every module or class should have responsibility 
+over a single part of the functionality provided by the software.
+
+
+
+//Not Following Single Responsibility Principle
+class User
+{
+    void CreatePost(Database db, string postMessage)
+    {
+        try
+        {
+            db.Add(postMessage);
+        }
+        catch (Exception ex)
+        {
+            db.LogError("An error occured: ", ex.ToString());
+            File.WriteAllText("\LocalErrors.txt", ex.ToString());
+        }
+    }
+}
+
+
+
+//Following Single Responsibility Principle
+class Post
+{
+    private ErrorLogger errorLogger = new ErrorLogger();
+
+    void CreatePost(Database db, string postMessage)
+    {
+        try
+        {
+            db.Add(postMessage);
+        }
+        catch (Exception ex)
+        {
+            errorLogger.log(ex.ToString())
+        }
+    }
+}
+
+class ErrorLogger
+{
+    void log(string error)
+    {
+      db.LogError("An error occured: ", error);
+      File.WriteAllText("\LocalErrors.txt", error);
+    }
+}
